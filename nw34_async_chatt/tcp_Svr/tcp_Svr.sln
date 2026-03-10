@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.36631.11
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tcp_Svr", "tcp_Svr.vcxproj", "{EF8C9ED7-5276-46AC-9671-DF1E31EEBAA3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EF8C9ED7-5276-46AC-9671-DF1E31EEBAA3}.Debug|x86.ActiveCfg = Debug|Win32
+		{EF8C9ED7-5276-46AC-9671-DF1E31EEBAA3}.Debug|x86.Build.0 = Debug|Win32
+		{EF8C9ED7-5276-46AC-9671-DF1E31EEBAA3}.Release|x86.ActiveCfg = Release|Win32
+		{EF8C9ED7-5276-46AC-9671-DF1E31EEBAA3}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3F2BEC62-88FD-4D92-A2E1-F4B92997E9AC}
+	EndGlobalSection
+EndGlobal

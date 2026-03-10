@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.36631.11
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nw_sockopt", "nw_sockopt.vcxproj", "{DEC7766B-85D7-442F-9A75-C0374F354FFB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DEC7766B-85D7-442F-9A75-C0374F354FFB}.Debug|x86.ActiveCfg = Debug|Win32
+		{DEC7766B-85D7-442F-9A75-C0374F354FFB}.Debug|x86.Build.0 = Debug|Win32
+		{DEC7766B-85D7-442F-9A75-C0374F354FFB}.Release|x86.ActiveCfg = Release|Win32
+		{DEC7766B-85D7-442F-9A75-C0374F354FFB}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A5F96F3C-57CD-40DE-A4A7-03EAA1BE4244}
+	EndGlobalSection
+EndGlobal

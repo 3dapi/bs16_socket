@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.36631.11
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nw_sock", "nw_sock.vcxproj", "{626746E1-BF02-426D-AD00-47451172A327}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{626746E1-BF02-426D-AD00-47451172A327}.Debug|x86.ActiveCfg = Debug|Win32
+		{626746E1-BF02-426D-AD00-47451172A327}.Debug|x86.Build.0 = Debug|Win32
+		{626746E1-BF02-426D-AD00-47451172A327}.Release|x86.ActiveCfg = Release|Win32
+		{626746E1-BF02-426D-AD00-47451172A327}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2590A8C5-6159-45EC-9EC5-628D015C2DF2}
+	EndGlobalSection
+EndGlobal

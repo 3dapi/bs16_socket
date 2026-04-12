@@ -16,228 +16,228 @@
 #include <string.h>
 
 
-#define	MAX_BUF		8192
+#define MAX_BUF     8192
 
-char	sPt[32]="60000";
-char	sIp[64]="127.0.0.1";
+char    sPt[32]="60000";
+char    sIp[64]="127.0.0.1";
 
 
 void LogGetLastError(int hr);
 
 
-SOCKET			g_scHost = 0;				// socket
-SOCKADDR_IN		g_sdHost = {0};				// address
-WSAEVENT		g_seHost = 0;				// Event
+SOCKET          g_scHost {};                // socket
+SOCKADDR_IN     g_sdHost {};                // address
+WSAEVENT        g_seHost {};                // Event
 
 
 int main()
 {
-	WSADATA		wsData={0};
-	int			hr =-1;
+    WSADATA     wsData{};
+    int         hr =-1;
 
-	printf("Starting Client.\nPort: %s\n", sPt);
+    printf("Starting Client.\nPort: %s\n", sPt);
 
-	if(0 != WSAStartup(MAKEWORD(2, 2), &wsData))
-		return -1;
-
-
-	g_scHost = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-
-	if(INVALID_SOCKET == g_scHost)
-		return -1;
+    if(0 != WSAStartup(MAKEWORD(2, 2), &wsData))
+        return -1;
 
 
-	memset(&g_sdHost, 0, sizeof(g_sdHost));
-	g_sdHost.sin_family      = AF_INET;
-	g_sdHost.sin_addr.s_addr = inet_addr(sIp);
-	g_sdHost.sin_port        = htons( atoi(sPt) );
+    g_scHost = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+    if(INVALID_SOCKET == g_scHost)
+        return -1;
 
 
-	// event 객체 생성
-	g_seHost = WSACreateEvent();
-
-	// 소켓에 event 객체 바인딩.
-	// connect함수 호출 전에 미리 바인딩하면 접속 event를 얻을 수 있음
-	hr = WSAEventSelect(g_scHost, g_seHost, (FD_CONNECT|FD_READ|FD_WRITE|FD_CLOSE));
+    memset(&g_sdHost, 0, sizeof(g_sdHost));
+    g_sdHost.sin_family      = AF_INET;
+    g_sdHost.sin_addr.s_addr = inet_addr(sIp);
+    g_sdHost.sin_port        = htons( atoi(sPt) );
 
 
-	hr = connect(g_scHost, (SOCKADDR*)&g_sdHost, sizeof(SOCKADDR_IN));
+    // event 객체 생성
+    g_seHost = WSACreateEvent();
 
-	// EventSelect모델은 자동으로 Non-blocking 모델로 바뀝니다.
-	// 따라서 에러가 발생했을 때 정확하게 이것이 에러인지
-	// WSAGetLastError() 함수를 통해서 확인해야 합니다.
-	if(SOCKET_ERROR ==hr)
-	{
-		Sleep(10);
-		hr = WSAGetLastError();
-
-		if(WSAEWOULDBLOCK !=hr)
-		{
-			return -1;
-		}
-	}
+    // 소켓에 event 객체 바인딩.
+    // connect함수 호출 전에 미리 바인딩하면 접속 event를 얻을 수 있음
+    hr = WSAEventSelect(g_scHost, g_seHost, (FD_CONNECT|FD_READ|FD_WRITE|FD_CLOSE));
 
 
-	while(g_scHost)
-	{
-		int	hr = 0;
-		WSANETWORKEVENTS wnE={0};
+    hr = connect(g_scHost, (SOCKADDR*)&g_sdHost, sizeof(SOCKADDR_IN));
+
+    // EventSelect모델은 자동으로 Non-blocking 모델로 바뀝니다.
+    // 따라서 에러가 발생했을 때 정확하게 이것이 에러인지
+    // WSAGetLastError() 함수를 통해서 확인해야 합니다.
+    if(SOCKET_ERROR ==hr)
+    {
+        Sleep(10);
+        hr = WSAGetLastError();
+
+        if(WSAEWOULDBLOCK !=hr)
+        {
+            return -1;
+        }
+    }
 
 
-		// 네트워크 이벤트를 기다린다
-		//hr = WaitForSingleObject(g_seHost, INFINITE);
-		hr = WSAWaitForMultipleEvents(1, &g_seHost, FALSE, WSA_INFINITE, FALSE);
-
-		if(0 == g_scHost)
-			break;
+    while(g_scHost)
+    {
+        int hr = 0;
+        WSANETWORKEVENTS wnE={0};
 
 
-		// WSAEnumNetworkEvents() 함수의 에러 반환 체크
-		if(WSA_WAIT_FAILED == hr)
-		{
-			printf("Err::WSAWaitForMultipleEvents\n");
-			hr = WSAGetLastError();
-			LogGetLastError(hr);
-			break;
-		}
+        // 네트워크 이벤트를 기다린다
+        //hr = WaitForSingleObject(g_seHost, INFINITE);
+        hr = WSAWaitForMultipleEvents(1, &g_seHost, FALSE, WSA_INFINITE, FALSE);
+
+        if(0 == g_scHost)
+            break;
 
 
-		// event 분해
-		hr = WSAEnumNetworkEvents(g_scHost, g_seHost, &wnE);
-
-		if(SOCKET_ERROR == hr)
-		{
-			printf("Err::WSAEnumNetworkEvents\n");
-
-			hr = WSAGetLastError();
-			LogGetLastError(hr);
-			break;
-		}
+        // WSAEnumNetworkEvents() 함수의 에러 반환 체크
+        if(WSA_WAIT_FAILED == hr)
+        {
+            printf("Err::WSAWaitForMultipleEvents\n");
+            hr = WSAGetLastError();
+            LogGetLastError(hr);
+            break;
+        }
 
 
-		////////////////////////////////////////////////////////////////////////
-		// event process
+        // event 분해
+        hr = WSAEnumNetworkEvents(g_scHost, g_seHost, &wnE);
 
-		// connection event
-		if( FD_CONNECT & wnE.lNetworkEvents)
-		{
-			if(wnE.iErrorCode[FD_CONNECT_BIT])
-			{
-				hr = wnE.iErrorCode[FD_CONNECT_BIT];
-				LogGetLastError(hr);
-				break;
-			}
+        if(SOCKET_ERROR == hr)
+        {
+            printf("Err::WSAEnumNetworkEvents\n");
 
-			printf("Connection Successed\n");
-		}
-
-		// Sending event
-		else if( FD_WRITE & wnE.lNetworkEvents)
-		{
-			if(wnE.iErrorCode[FD_WRITE_BIT])
-				printf("Write Error.\n");
-
-		}
-
-		// receive event
-		else if( FD_READ & wnE.lNetworkEvents)
-		{
-			if(wnE.iErrorCode[FD_READ_BIT])
-				printf("Read Error.\n");
+            hr = WSAGetLastError();
+            LogGetLastError(hr);
+            break;
+        }
 
 
-			char sRcv[MAX_BUF+4]={0};
+        ////////////////////////////////////////////////////////////////////////
+        // event process
 
-			int iRcv = recv(g_scHost, sRcv, MAX_BUF, 0);
+        // connection event
+        if( FD_CONNECT & wnE.lNetworkEvents)
+        {
+            if(wnE.iErrorCode[FD_CONNECT_BIT])
+            {
+                hr = wnE.iErrorCode[FD_CONNECT_BIT];
+                LogGetLastError(hr);
+                break;
+            }
 
-			if(0>iRcv)
-			{
-				hr = WSAGetLastError();
-				if(WSAEWOULDBLOCK == hr)
-					continue;
+            printf("Connection Successed\n");
+        }
 
-				printf("Network Close\n");
-				break;
-			}
-			if(0 == iRcv)
-			{
-				printf("Network Close\n");
-				break;
-			}
-			else
-			{
-				printf("Recv from server : %s\n", sRcv);
-			}
-		}
+        // Sending event
+        else if( FD_WRITE & wnE.lNetworkEvents)
+        {
+            if(wnE.iErrorCode[FD_WRITE_BIT])
+                printf("Write Error.\n");
 
-		// close event
-		else if( FD_CLOSE & wnE.lNetworkEvents)
-		{
-			if(wnE.iErrorCode[FD_CLOSE_BIT])
-			{
-				hr = wnE.iErrorCode[FD_CLOSE_BIT];
-				LogGetLastError(hr);
-			}
+        }
 
-			break;
-		}
+        // receive event
+        else if( FD_READ & wnE.lNetworkEvents)
+        {
+            if(wnE.iErrorCode[FD_READ_BIT])
+                printf("Read Error.\n");
 
 
+            char sRcv[MAX_BUF+4]={0};
 
-		// Test ...
-		int		r = 0;
-		int		iLen=0;
-		int		iTot=0;					// Total Sending Data
-		char	sSnd[MAX_BUF]={0};		// Send용 버퍼
+            int iRcv = recv(g_scHost, sRcv, MAX_BUF, 0);
 
-		static int TstVal = 0;
-		++TstVal;
+            if(0>iRcv)
+            {
+                hr = WSAGetLastError();
+                if(WSAEWOULDBLOCK == hr)
+                    continue;
 
-		sprintf(sSnd, "test message %d", TstVal);
-		iLen = strlen(sSnd);
+                printf("Network Close\n");
+                break;
+            }
+            if(0 == iRcv)
+            {
+                printf("Network Close\n");
+                break;
+            }
+            else
+            {
+                printf("Recv from server : %s\n", sRcv);
+            }
+        }
+
+        // close event
+        else if( FD_CLOSE & wnE.lNetworkEvents)
+        {
+            if(wnE.iErrorCode[FD_CLOSE_BIT])
+            {
+                hr = wnE.iErrorCode[FD_CLOSE_BIT];
+                LogGetLastError(hr);
+            }
+
+            break;
+        }
 
 
-		// 데이터 송신
-		while(iTot<iLen)
-		{
-			r = send(g_scHost, sSnd+iTot, iLen-iTot, 0);
 
-			if(SOCKET_ERROR == hr)
-			{
-				r = WSAGetLastError();
+        // Test ...
+        int     r = 0;
+        int     iLen=0;
+        int     iTot=0;                 // Total Sending Data
+        char    sSnd[MAX_BUF]={0};      // Send용 버퍼
 
-				if(WSAEWOULDBLOCK == hr)
-					continue;
+        static int TstVal = 0;
+        ++TstVal;
 
-				// socket error
-				printf("Network closeclosed\n");
-				goto END;
-			}
+        sprintf(sSnd, "test message %d", TstVal);
+        iLen = strlen(sSnd);
 
-			iTot += r;
-		}
-	}
+
+        // 데이터 송신
+        while(iTot<iLen)
+        {
+            r = send(g_scHost, sSnd+iTot, iLen-iTot, 0);
+
+            if(SOCKET_ERROR == hr)
+            {
+                r = WSAGetLastError();
+
+                if(WSAEWOULDBLOCK == hr)
+                    continue;
+
+                // socket error
+                printf("Network closeclosed\n");
+                goto END;
+            }
+
+            iTot += r;
+        }
+    }
 
 END:
 
-	shutdown(g_scHost, SD_BOTH);
-	closesocket(g_scHost);
+    shutdown(g_scHost, SD_BOTH);
+    closesocket(g_scHost);
 
-	WSACleanup();
+    WSACleanup();
 
-	return 0;
+    return 0;
 }
 
 
 void LogGetLastError(int hr)
 {
-	char* lpMsgBuf;
-	FormatMessage(
-				FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM
-				| FORMAT_MESSAGE_IGNORE_INSERTS
-				, nullptr, hr, 0, (LPSTR)&lpMsgBuf, 0, nullptr );
+    char* lpMsgBuf;
+    FormatMessage(
+                FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM
+                | FORMAT_MESSAGE_IGNORE_INSERTS
+                , nullptr, hr, 0, (LPSTR)&lpMsgBuf, 0, nullptr );
 
-	printf( "%s\n", lpMsgBuf);
-	LocalFree( lpMsgBuf );
+    printf( "%s\n", lpMsgBuf);
+    LocalFree( lpMsgBuf );
 }
 

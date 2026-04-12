@@ -7,13 +7,13 @@
 
 #pragma comment(lib, "ws2_32.lib")
 
-#include <winsock2.h>
-#include <windows.h>
-#include <process.h>
+#include &lt;winsock2.h&gt;
+#include &lt;windows.h&gt;
+#include &lt;process.h&gt;
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
 
 
 #define	MAX_BUF		8192
@@ -254,7 +254,7 @@ LRESULT NetProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 		int iRcv=recv(scHost, sBufRcv, MAX_BUF, 0);
 
 		// socket close
-		if(0 > iRcv)
+		if(0 &gt; iRcv)
 		{
 			hr = WSAGetLastError();
 			if(WSAEWOULDBLOCK != hr)
@@ -319,14 +319,14 @@ DWORD WINAPI WorkSnd(void *pParam)
 
 		iLen = g_nBuf;
 
-		if(0< iLen)
+		if(0&lt; iLen)
 		{
 			// 데이터 송신
-			while(iTot<iLen)
+			while(iTot&lt;iLen)
 			{
 				iSnd =send(g_scHost, g_sBuf+iTot, iLen-iTot, 0);
 
-				if(0>=iSnd)
+				if(0&gt;=iSnd)
 				{
 					int hr = WSAGetLastError();
 

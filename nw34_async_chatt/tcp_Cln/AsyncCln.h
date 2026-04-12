@@ -22,20 +22,20 @@ protected:
 	char				m_sPt[16];
 	char				m_sIp[64];
 
-	HWND				m_hWnd	;
-	UINT				m_wmNotify;
+	HWND				m_hWnd	{};
+	UINT				m_wmNotify{};
 
-	WSADATA				m_wsData;
-	SOCKET				m_scHost;
-	SOCKADDR_IN			m_sdHost;
+	WSADATA				m_wsData{};
+	SOCKET				m_scHost{};
+	SOCKADDR_IN			m_sdHost{};
 
-	HANDLE				m_hThSnd;						// Send용 쓰레드 핸들
-	CRITICAL_SECTION	m_CS;							// 임계영역: 동기화에 필요
+	HANDLE				m_hThSnd{};						// Send용 쓰레드 핸들
+	CRITICAL_SECTION	m_CS{};							// 임계영역: 동기화에 필요
 
-	int					m_nSnd;							// recorded 
-	char				m_sSnd[MAX_BUF_SND  ];			// send buffer
-	int					m_nRcv;							// received
-	char				m_sRcv[MAX_BUF_RCV+4];			// recv buffer
+	int					m_nSnd{};						// recorded 
+	char				m_sSnd[MAX_BUF_SND  ]{};		// send buffer
+	int					m_nRcv{};						// received
+	char				m_sRcv[MAX_BUF_RCV+4]{};		// recv buffer
 
 public:
 	CAsyncCln();

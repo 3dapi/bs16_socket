@@ -2,8 +2,8 @@
 #include <time.h>
 #include <windows.h>
 
-#define PIPENAME	"\\\\.\\Pipe\\DayTime"
-#define MAX_BUF		1024
+#define PIPENAME    "\\\\.\\Pipe\\DayTime"
+#define MAX_BUF     1024
 
 int main()
 {
@@ -37,22 +37,22 @@ int main()
     {
         if ( ConnectNamedPipe(hPipe, nullptr) )
         {
-			while(1)
-			{
-				tNow = time(0);
-				t = localtime(&tNow);
-				nLen = _snprintf(szTime, 0xFF, "%02d:%02d:%02d", t->tm_hour, t->tm_min, t->tm_sec);
+            while(1)
+            {
+                tNow = time(0);
+                t = localtime(&tNow);
+                nLen = _snprintf(szTime, 0xFF, "%02d:%02d:%02d", t->tm_hour, t->tm_min, t->tm_sec);
 
-				bRet = WriteFile(hPipe, szTime, nLen, &dwWrite, nullptr);
-	            
-				if ( (!bRet) || (nLen != (int)dwWrite))
-				{
-					printf("fail to WriteFile, %d\n", GetLastError());
-					exit(0);
-				}
+                bRet = WriteFile(hPipe, szTime, nLen, &dwWrite, nullptr);
+                
+                if ( (!bRet) || (nLen != (int)dwWrite))
+                {
+                    printf("fail to WriteFile, %d\n", GetLastError());
+                    exit(0);
+                }
 
-				FlushFileBuffers(hPipe);
-			}
+                FlushFileBuffers(hPipe);
+            }
             DisconnectNamedPipe(hPipe);
         }
     }

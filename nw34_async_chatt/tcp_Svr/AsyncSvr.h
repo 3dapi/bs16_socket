@@ -8,10 +8,8 @@
 #ifndef _AsyncSvr_H_
 #define _AsyncSvr_H_
 
-
 #include <vector>
 using namespace std;
-
 
 class CAsyncSvr
 {
@@ -24,11 +22,11 @@ public:
 
 	struct RemoteHost
 	{
-		SOCKET		scH;								// socket
-		SOCKADDR_IN sdH;								// address
-		int			nBuf;								// recorded byte
-		char		sBuf[MAX_BUF_SND];					// Send buffer
-
+		SOCKET		scH{};						// socket
+		SOCKADDR_IN sdH{};						// address
+		int			nBuf{};						// recorded byte
+		char		sBuf[MAX_BUF_SND]{};		// Send buffer
+	
 		RemoteHost();
 		RemoteHost(SOCKET, SOCKADDR_IN*);
 		~RemoteHost();
@@ -38,19 +36,19 @@ public:
 	};
 
 protected:
-	char				m_sIp[64];
-	char				m_sPt[16];
+	char				m_sIp[64]{};
+	char				m_sPt[16]{};
 
-	HWND				m_hWnd	;
-	UINT				m_wmNotify;
-	WSADATA				m_wsData;
-	SOCKET				m_scLstn;
-	SOCKADDR_IN			m_sdLstn;
+	HWND				m_hWnd	{};
+	UINT				m_wmNotify{};
+	WSADATA				m_wsData{};
+	SOCKET				m_scLstn{};
+	SOCKADDR_IN			m_sdLstn{};
 
 	vector<RemoteHost*>	m_rmCln;						// client list
 
-	HANDLE				m_hThSnd;						// Send용 쓰레드 핸들
-	CRITICAL_SECTION	m_CS;							// 임계영역: 동기화에 필요
+	HANDLE				m_hThSnd{};						// Send용 쓰레드 핸들
+	CRITICAL_SECTION	m_CS{};							// 임계영역: 동기화에 필요
 
 
 public:
